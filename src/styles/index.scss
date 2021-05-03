@@ -63,3 +63,130 @@ div:focus {
 .app-container {
   padding: 20px;
 }
+
+
+// lintang custom
+
+.bottom-static {
+  z-index: 2;
+  position: fixed;
+  bottom: 0;
+  width: 100% !important;
+  padding: 0 i !important;
+  margin: 0 !important;
+}
+
+
+.btn-form-action {
+  width: 300px;
+}
+
+@media screen and (max-width: 1550px) {
+  .btn-form-action {
+    width: 300px;
+  }
+
+  .search-dialog, .form-dialog-1 {
+    .el-dialog {
+      width: 40%;
+    }
+  }
+}
+
+@media screen and (max-width: 1000px) {
+  .btn-form-action {
+    width: 200px;
+  }
+
+  .search-dialog, .form-dialog-1 {
+    .el-dialog {
+      width: 40%;
+    }
+  }
+}
+
+@media screen and (max-width: 900px) {
+  .btn-form-action {
+    width: 300px;
+  }
+
+  .search-dialog, .form-dialog-1 {
+    .el-dialog {
+      width: 60%;
+    }
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .btn-form-action {
+    width: 300px;
+  }
+
+  .search-dialog, .form-dialog-1 {
+    .el-dialog {
+      width: 50%;
+    }
+  }
+}
+
+@media screen and (max-width: 700px) {
+  .btn-form-action {
+    width: 250px;
+  }
+
+  .search-dialog, .form-dialog-1 {
+    .el-dialog {
+      width: 80%;
+    }
+  }
+}
+
+@media screen and (max-width: 520px) {
+  .btn-form-action {
+    width: 200px;
+  }
+
+  .search-dialog, .form-dialog-1 {
+    .el-dialog {
+      width: 80%;
+    }
+  }
+}
+
+
+@media screen and (max-width: 500px) {
+  .el-dialog, .el-message-box {
+    width: 96% !important;
+  }
+
+  .el-table--medium th, .el-table--medium td {
+    padding: 0;
+  }
+
+  .el-button + .el-button {
+    margin-left: 0;
+  }
+
+  .bottom-static {
+    text-align: center;
+    left: 0 !important;
+  }
+
+  .app-container {
+      padding: 5px;
+  }
+
+  .el-date-editor.el-input, .el-date-editor.el-input__inner {
+      width: 188px;
+  }
+
+  .btn-form-action {
+    width: 100px;
+  }
+
+  .search-dialog, .form-dialog-1 {
+    .el-dialog {
+      width: 80%;
+    }
+  }
+}
