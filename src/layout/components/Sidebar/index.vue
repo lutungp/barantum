@@ -26,12 +26,17 @@ import variables from '@/styles/variables.scss'
 
 export default {
   components: { SidebarItem, Logo },
+
   computed: {
     ...mapGetters([
-      'sidebar'
+      'sidebar', 'role'
     ]),
     routes() {
-      return this.$router.options.routes
+      // this.role
+      let routes = this.$router.options.routes
+      let routesAvailable = routes.filter(p=>p.roles.includes(this.role))
+
+      return routesAvailable
     },
     activeMenu() {
       const route = this.$route

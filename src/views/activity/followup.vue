@@ -4,7 +4,7 @@
       type="primary"
       @click="handleCreate"
     >
-      New User
+      New Activity
     </el-button>
     <el-table
       v-loading="loading"
@@ -14,16 +14,33 @@
     >
       <el-table-column
         align="center"
-        label="Kode User"
+        label="Activity Number"
         width="300"
       >
         <template slot-scope="{row}">
-          {{ row.user_kode }}
+          {{ row.activity_no }}
+        </template>
+      </el-table-column>
+      <el-table-column
+        align="center"
+        label="Date"
+        width="300"
+      >
+        <template slot-scope="{row}">
+          {{ row.activity_tgl }}
         </template>
       </el-table-column>
       <el-table-column
         align="header-center"
-        label="Nama User"
+        label="Activity Description"
+      >
+        <template slot-scope="{row}">
+          {{ row.activity_deskripsi }}
+        </template>
+      </el-table-column>
+      <el-table-column
+        align="header-center"
+        label="User Name"
       >
         <template slot-scope="{row}">
           {{ row.name }}
@@ -31,10 +48,10 @@
       </el-table-column>
       <el-table-column
         align="header-center"
-        label="Role"
+        label="Stats"
       >
         <template slot-scope="{row}">
-          {{ row.role_nama }}
+          {{ row.activity_status }}
         </template>
       </el-table-column>
       <el-table-column
@@ -67,82 +84,88 @@
     </div>
       <el-dialog
         :visible.sync="dialogVisible"
-        width="30%"
-        :title="dialogType==='Edit'?'Edit User':'New User'"
+        :title="dialogType==='Edit'?'Edit Activity':'New Activity'"
       >
         <el-form
           :model="form"
-          label-width="100px"
+          label-width="150px"
           label-position="left"
           :rules="rules"
           ref="submitForm"
         >
-          <el-form-item label="Kode">
+          <el-form-item label="Activity Number">
             <el-input
-              v-model="form.user_kode"
-              placeholder="Kode User"
+              v-model="form.activity_no" readonly=""
             />
           </el-form-item>
           <el-form-item
-            label="Nama"
-            prop="name"
-            :error="getErrorForField('name', errors)"
+            label="Date"
+            prop="activity_tgl"
+            :error="getErrorForField('activity_tgl', errors)"
             required>
-            <el-input
+            <el-date-picker
+              v-model="form.activity_tgl"
+              type="datetime"
+              format="dd-MM-yyyy HH:mm:ss"
+              value-format="dd-MM-yyyy HH:mm:ss"
+              placeholder="Select date and time">
+            </el-date-picker>
+          </el-form-item>
+
+          <el-form-item
+            label="Customer"
+            prop="m_user_id"
+            :error="getErrorForField('m_user_id', errors)"
+            required>
+            <el-select
+              filterable
+              remote
               v-model="form.name"
-              placeholder="Nama User"
-            />
-          </el-form-item>
-          <el-form-item
-            label="User Role"
-            prop="s_role_id"
-            :error="getErrorForField('s_role_id', errors)"
-            required>
-            <el-select v-model="form.s_role_id"
-              clearable
-              placeholder="Select"
-              @change="selectRole">
+              placeholder="Please enter a keyword"
+              :remote-method="remoteMethod"
+              :loading="loadingUsers"
+              @change="selectUser">
               <el-option
-                v-for="item in optionRoles"
-                :key="item.role_id"
-                :label="item.role_nama"
-                :value="item.role_id"
-                width="100%">
+                v-for="item in optionsUser"
+                :key="item.user_id"
+                :label="item.name"
+                :value="item.user_id">
               </el-option>
             </el-select>
           </el-form-item>
+
           <el-form-item
-            label="Password"
-            prop="password"
-            :error="getErrorForField('password', errors)"
+            label="Description"
+            prop="activity_deskripsi"
+            :error="getErrorForField('activity_deskripsi', errors)"
             required>
             <el-input
-              v-model="form.password"
-              type="password"
-              placeholder="Password"
+              v-model="form.activity_deskripsi"
+              placeholder="Description"
             />
           </el-form-item>
+
         </el-form>
         <div style="text-align:right;">
           <el-button
             type="danger"
             @click="dialogVisible=false"
           >
-            Cancel
+            Tutup
           </el-button>
           <el-button
             type="primary"
-            @click="confirmUser"
+            @click="confirmActivity"
           >
-            Save
+            Simpan
           </el-button>
         </div>
       </el-dialog>
   </div>
 </template>
 <script>
-import { getUsers, updateUser, createUser, deleteUser } from '@/api/user'
-import { getRoles } from '@/api/roles'
+import { getActivities, updateActivity, createActivity, deleteUser, deleteActivity } from '@/api/activity'
+import { getUsers } from '@/api/user'
 export default {
     data() {
       return {
@@ -150,62 +173,63 @@ export default {
         dataList : [],
         dataListTotal : 0,
         form : {
-          user_id : 0,
-          user_kode : "",
-          name : "",
-          s_role_id : null,
-          role_nama : "",
-          password : ""
+          activity_id : 0,
+          activity_no : "",
+          activity_deskripsi : "",
+          activity_tgl : new Date(),
+          m_user_id : null,
+          name : ''
         },
         dialogVisible : false,
         dialogType : 'New',
         rules : {
-          name : [
-            {required: true, message: 'Name cannot be empty', trigger: 'blur'},
-            {min: 3, max: 100, message: 'The name should be at least 3 characters and a maximum of 100 characters', trigger: 'blur'}
+          activity_tgl : [
+            {required: true, message: 'Date cannot be empty', trigger: 'blur'},
           ],
-          s_role_id : [
-            {required: true, message: 'Role cannot be empty', trigger: 'blur'}
+          activity_deskripsi : [
+            {required: true, message: 'Description cannot be empty', trigger: 'blur'},
+            {min: 10, max: 100, message: 'Description of at least 10 characters', trigger: 'blur'}
           ],
-          password : [
-            {required: true, message: 'Password cannot be empty', trigger: 'blur'},
-            {min: 3, max: 100, message: 'Password of at least 3 characters', trigger: 'blur'}
-          ],
+          m_user_id : [
+            {required: true, message: 'Customer cannot be empty', trigger: 'blur'},
+          ]
         },
         errors : [],
-        optionRoles : []
+        loadingUsers : false,
+        optionsUser : []
       }
     },
 
     created() {
-      this.getUsers()
-      this.getRoles()
+      this.getActivity()
     },
 
     methods : {
-      getUsers() {
+      getActivity() {
         this.loading = true
-        getUsers({ filter : '', role : '' }).then(response => {
-          this.dataList = response.users;
+        getActivities().then(response => {
+          this.dataList = response.activity;
           this.dataListTotal = response.total
           this.loading = false
         })
       },
 
-      getRoles() {
-        getRoles().then(response => {
-          this.optionRoles = response.items
+      getUser(filter){
+        this.loadingUsers = true
+        getUsers({ filter : filter, role : 'CUSTOMER' }).then(response => {
+          this.optionsUser = response.users;
+          this.loadingUsers = false
         })
       },
 
       reset(){
         this.form = {
-          user_id : 0,
-          user_kode : "",
-          name : "",
-          s_role_id : null,
-          role_nama : "",
-          password : ""
+          activity_id : 0,
+          activity_no : "",
+          activity_deskripsi : "",
+          activity_tgl : new Date(),
+          m_user_id : null,
+          name : ''
         }
       },
 
@@ -229,46 +253,48 @@ export default {
         this.dialogType = 'Edit'
         this.dialogVisible = true
         this.reset();
+        // this.getUser({ filter : scope.row.name })
         this.form = {
-          user_id : scope.row.user_id,
-          user_kode : scope.row.user_kode,
-          name : scope.row.name,
-          s_role_id : scope.row.s_role_id,
-          role_nama : scope.row.role_nama,
-          password : scope.row.password,
+          activity_id : scope.row.activity_id,
+          activity_no : scope.row.activity_no,
+          activity_deskripsi : scope.row.activity_deskripsi,
+          activity_tgl : scope.row.activity_tgl,
+          m_user_id : scope.row.m_user_id,
+          name : scope.row.name
         }
       },
 
       handleDelete(scope){
+        let me = this;
         const { $index, row } = scope
-        this.$confirm('Confirm to remove the user?', 'Warning', {
+        me.$confirm('Confirm to remove the user?', 'Warning', {
           confirmButtonText: 'Confirm',
           cancelButtonText: 'Cancel',
           type: 'warning'
         })
         .then(async() => {
-          deleteUser(row.user_id).then(response => {
-            console.log(response)
+          deleteActivity(row.activity_id).then(response => {
+            me.$message({
+              type: 'success',
+              message: 'Deleted!'
+            })
+
+            me.getActivity()
           })
-          this.$message({
-            type: 'success',
-            message: 'Deleted!'
-          })
-          this.getUsers()
         })
         .catch(err => { console.error(err) })
       },
 
-      confirmUser(){
+      confirmActivity(){
         let me = this
         const isEdit = me.dialogType === 'Edit'
         if (!me.validateForm()) {
           return false;
         }
         if (isEdit) {
-            updateUser(me.form.user_id, me.form).then(response => {
+            updateActivity(me.form.activity_id, me.form).then(response => {
               me.dialogVisible = false
-              me.getUsers();
+              me.getActivity();
               me.successResponse()
             })
             .catch(function (error) {
@@ -287,9 +313,9 @@ export default {
               me.errors = datamsg
             })
         } else {
-            createUser(me.form).then(response => {
+            createActivity(me.form).then(response => {
               me.dialogVisible = false
-              me.getUsers();
+              me.getActivity();
               me.successResponse()
             })
             .catch(function (error) {
@@ -310,19 +336,34 @@ export default {
       },
 
       successResponse(){
-        const { role_nama, name } = this.form
+        const { activity_no, activity_tgl } = this.form
         this.dialogVisible = false
         this.$notify({
           title: 'Success',
           dangerouslyUseHTMLString: true,
           message: `
-              <div>Name: ${name}</div>
-              <div>Role: ${role_nama}</div>
+              <div>Number: ${activity_no}</div>
+              <div>Date: ${activity_tgl}</div>
             `,
           type: 'success'
         })
 
         this.reset()
+      },
+
+      remoteMethod(query){
+        if (query !== '') {
+          this.loading = true;
+          setTimeout(() => {
+            this.getUser(query)
+          }, 500);
+        } else {
+          this.optionsUser = [];
+        }
+      },
+
+      selectUser(value){
+        this.form.m_user_id=value
       },
 
       getErrorForField(field, error) {
@@ -332,13 +373,6 @@ export default {
           return errfield[0].message
         }
       },
-
-      selectRole(value){
-        var selectRole = this.optionRoles.filter(p=>p.role_id==value);
-        if (selectRole.length > 0) {
-          this.form.role_nama = selectRole[0].role_nama
-        }
-      }
     }
 }
 </script>

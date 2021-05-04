@@ -15,6 +15,13 @@ export function getInfo(token) {
   })
 }
 
+export function getActivity(token) {
+  return request({
+    url: '/users/activity',
+    method: 'get'
+  })
+}
+
 export function logout() {
   return request({
     url: '/users/logout',
