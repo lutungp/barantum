@@ -62,6 +62,7 @@ export const constantRoutes = [
   {
     path: '/master',
     name: 'Master',
+    title: 'Master',
     component: Layout,
     roles: ['ADMIN'],
     children: [
@@ -71,6 +72,21 @@ export const constantRoutes = [
         roles: ['ADMIN'],
         component: () => import('@/views/master/user'),
         meta: { title: 'User', icon: 'user' }
+      },
+      {
+        path: 'customer',
+        name: 'Customer',
+        roles: ['ADMIN'],
+        component: () => import('@/views/master/customer/index'),
+        meta: { title: 'Customer', icon: 'el-icon-user-solid' },
+      },
+      {
+        path: 'customer/edit/:id',
+        name: 'Edit',
+        roles: ['ADMIN'],
+        hidden : true,
+        component: () => import('@/views/master/customer/edit'),
+        meta: { title: 'Edit Customer' },
       }
     ]
   },
@@ -92,7 +108,14 @@ export const constantRoutes = [
   },
 
   // 404 page must be placed at the end !!!
-  { path: '*', roles: ['ADMIN', 'CUSTOMER'], redirect: '/404', hidden: true }
+  { path: '*', roles: ['ADMIN', 'CUSTOMER'], redirect: '/404', hidden: true },
+]
+
+export const asyncRoutes = [
+  {
+    path: '/master/customer/edit',
+    component: Layout
+  },
 ]
 
 const createRouter = () => new Router({
