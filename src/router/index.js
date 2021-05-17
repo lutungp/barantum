@@ -33,12 +33,14 @@ import Layout from '@/layout'
 export const constantRoutes = [
   {
     path: '/login',
+    roles: ['ADMIN', 'CUSTOMER'],
     component: () => import('@/views/login/index'),
     hidden: true
   },
 
   {
     path: '/404',
+    roles: ['ADMIN', 'CUSTOMER'],
     component: () => import('@/views/404'),
     hidden: true
   },
@@ -46,10 +48,12 @@ export const constantRoutes = [
   {
     path: '/',
     component: Layout,
+    roles: ['ADMIN', 'CUSTOMER'],
     redirect: '/dashboard',
     children: [{
       path: 'dashboard',
       name: 'Dashboard',
+      roles: ['ADMIN', 'CUSTOMER'],
       component: () => import('@/views/dashboard/index'),
       meta: { title: 'Dashboard', icon: 'dashboard' }
     }]
@@ -59,18 +63,36 @@ export const constantRoutes = [
     path: '/master',
     name: 'Master',
     component: Layout,
+    roles: ['ADMIN'],
     children: [
       {
         path: 'user',
         name: 'User',
+        roles: ['ADMIN'],
         component: () => import('@/views/master/user'),
         meta: { title: 'User', icon: 'user' }
       }
     ]
   },
 
+  {
+    path: '/activity',
+    name: 'Activity',
+    component: Layout,
+    roles: ['ADMIN'],
+    children: [
+      {
+        path: 'followup',
+        name: 'Follow Up',
+        roles: ['ADMIN'],
+        component: () => import('@/views/activity/followup'),
+        meta: { title: 'Activity', icon: 'table' }
+      }
+    ]
+  },
+
   // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true }
+  { path: '*', roles: ['ADMIN', 'CUSTOMER'], redirect: '/404', hidden: true }
 ]
 
 const createRouter = () => new Router({
