@@ -109,7 +109,7 @@
                   <el-button
                     type="danger"
                     size="small"
-                    @click="reset()"
+                    @click="reset(), $router.push({ path: '/master/customer' })"
                   >
                     Cancel
                   </el-button>
@@ -148,10 +148,14 @@
                     label="Temperature"
                     prop="call_temperature"
                     :error="getErrorForField('call_temperature', errors)">
-                    <el-input
-                      v-model="formCalls.call_temperature"
-                      placeholder="Customers Temperature"
-                    />
+                    <el-select v-model="form.optionsTemperature" placeholder="Customers Temperature">
+                      <el-option
+                        v-for="item in optionsTemperature"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                      </el-option>
+                    </el-select>
                   </el-form-item>
                   <el-form-item
                     label="Interesting"
@@ -268,6 +272,7 @@
                   <el-button
                     type="danger"
                     size="small"
+                    @click="resetCall"
                   >
                     Cancel
                   </el-button>
@@ -389,6 +394,24 @@ export default {
         }, {
           value: 'Planed',
           label: 'Planed'
+        }
+      ],
+      optionsTemperature : [
+        {
+          value: 'Cold',
+          label: 'Cold'
+        }, {
+          value: 'Hot',
+          label: 'Hot'
+        }, {
+          value: 'Very Cold',
+          label: 'Very Cold'
+        }, {
+          value: 'Very Hot',
+          label: 'Very Hot'
+        }, {
+          value: 'Warm',
+          label: 'Warm'
         }
       ],
       optionsHours : [],

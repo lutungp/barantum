@@ -1,92 +1,10 @@
 <template>
   <div class="app-container">
-    <el-button
-      size="small"
-      type="primary"
-      @click="handleCreate"
-    >
-      New Call
-    </el-button>
-    <el-table
-      v-loading="loading"
-      :data="dataList"
-      style="width: 100%;margin-top:30px;"
-      border
-    >
-      <el-table-column
-        align="header-center"
-        label="Call Subject"
-      >
-        <template slot-scope="{row}">
-          {{ row.call_subject }}
-        </template>
-      </el-table-column>
-      <el-table-column
-        align="header-center"
-        label="Direction Status"
-      >
-        <template slot-scope="{row}">
-          {{ row.call_status_direction }}
-        </template>
-      </el-table-column>
-      <el-table-column
-        align="header-center"
-        label="Status Call"
-      >
-        <template slot-scope="{row}">
-          {{ row.call_status }}
-        </template>
-      </el-table-column>
-      <el-table-column
-        align="header-center"
-        label="Start Date"
-      >
-        <template slot-scope="{row}">
-          {{ row.call_start_date }}
-        </template>
-      </el-table-column>
-      <el-table-column
-        align="header-center"
-        label="User Owner"
-      >
-        <template slot-scope="{row}">
-          {{ row.m_userowner_nama }}
-        </template>
-      </el-table-column>
-      <el-table-column
-        align="center"
-        label="Operations"
-      >
-        <template slot-scope="scope">
-          <el-button
-            type="primary"
-            size="small"
-            @click="handleEdit(scope)"
-          >
-            Edit
-          </el-button>
-          <el-button
-            type="danger"
-            size="small"
-            @click="handleDelete(scope)"
-          >
-            Delete
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <div class="block bottom-static">
-      <el-pagination layout="prev, pager, next" :total="dataListTotal"></el-pagination>
-    </div>
-    <el-drawer
-      title="Form Customer"
-      :visible.sync="customerDrawer"
-      :with-header="false"
-      size="50%">
-        <div class="demo-drawer__content">
-          <el-container>
-            <el-header></el-header>
-            <el-main>
+    <el-row>
+      <el-col :lg="{span: 24}" :md="{span: 24}" :sm="{span: 24}">
+        <div class="grid-content">
+          <el-card shadow="always">
+            <el-row style="margin-top: 10px;">
               <el-form
                 :model="form"
                 label-width="150px"
@@ -240,41 +158,39 @@
                     </el-form-item>
                   </el-col>
                 </el-row>
+                <el-row>
+                  <div style="text-align:right;">
+                    <el-button
+                      type="danger"
+                      size="small"
+                      @click="reset(), $router.push({ path: '/activity/call' })"
+                    >
+                      Cancel
+                    </el-button>
+                    <el-button
+                      type="primary"
+                      size="small"
+                      @click="confirmCalls"
+                    >
+                      Save
+                    </el-button>
+                  </div>
+                </el-row>
               </el-form>
-            </el-main>
-            <el-footer>
-              <div style="text-align:right;">
-                <el-button
-                  type="danger"
-                  size="small"
-                  @click="customerDrawer=false, reset()"
-                >
-                  Cancel
-                </el-button>
-                <el-button
-                  type="primary"
-                  size="small"
-                  @click="confirmCall"
-                >
-                  Save
-                </el-button>
-              </div>
-            </el-footer>
-          </el-container>
+            </el-row>
+          </el-card>
         </div>
-    </el-drawer>
+      </el-col>
+    </el-row>
   </div>
 </template>
 <script>
 import { getCustomers } from '@/api/customer'
 import { getUsers } from '@/api/user'
-import { getCalls, updateCalls, createCalls, deleteCall } from '@/api/call'
+import { getCallDetail, updateCalls, createCalls, deleteCall } from '@/api/call'
 export default {
   data() {
     return {
-      loading : false,
-      dataList : [],
-      dataListTotal : 0,
       form : {
         call_id       : 0,
         call_key      : "",
@@ -294,36 +210,16 @@ export default {
         m_customerrelated_id : null,
         m_customerrelated_nama : 0
       },
-      dialogType : 'New',
-      customerDrawer : false,
+      errors : [],
       rules : {
         call_subject : [
-          {required: true, message: 'Call Subject cannot be empty', trigger: 'blur'},
-          {min: 3, max: 50, message: 'The Call Subject should be at least 3 characters and a maximum of 50 characters', trigger: 'blur'}
+          {required: true, message: 'Subject cannot be empty', trigger: 'blur'},
+          {min: 3, max: 50, message: 'The Subject should be at least 3 characters and a maximum of 50 characters', trigger: 'blur'}
         ],
         call_description : [
           {required: true, message: 'Call Subject cannot be empty', trigger: 'blur'},
         ]
       },
-      optionsSolutation : [
-        {
-          value: 'Dr.',
-          label: 'Dr.'
-        }, {
-          value: 'Mr.',
-          label: 'Mr.'
-        }, {
-          value: 'Mrs.',
-          label: 'Mrs.'
-        }, {
-          value: 'Ms.',
-          label: 'Ms.'
-        }, {
-          value: 'Prof.',
-          label: 'Prof.'
-        }
-      ],
-      errors : [],
       optionsOfferWa : [
         {
           value: 'y',
@@ -384,30 +280,31 @@ export default {
     }
   },
 
-  created(){
+  beforeCreate(){
     let me = this
-    var pad = "00"
-    for (let index = 0; index < 24; index++) {
-      const hour = '' + index
-      var ans = pad.substring(0, pad.length - hour.length) + hour
-      me.optionsHours.push({
-        value: '' + ans,
-        label: '' + ans
-      })
-    }
+    const id = this.$route.params && this.$route.params.id
 
-    for (let index = 0; index < 60; index++) {
-      const hour = '' + index
-      var ans = pad.substring(0, pad.length - hour.length) + hour
-      me.optionsMinutes.push({
-        value: '' + ans,
-        label: '' + ans
-      })
-    }
-
-    this.getUsers('')
-    this.getCalls()
-    this.getCustomers('')
+    getCallDetail(id).then(response => {
+      me.form = {
+        call_id       : response.customer.call_id,
+        call_key      : response.customer.call_key,
+        call_subject  : response.customer.call_subject,
+        call_description : response.customer.call_description,
+        call_temperature : response.customer.call_temperature,
+        call_offerwa  : response.customer.call_offerwa,
+        call_interesting : response.customer.call_interesting,
+        call_status_direction : response.customer.call_status_direction,
+        call_status : response.customer.call_status,
+        call_start_date   : response.customer.call_start_date,
+        call_hourduration : response.customer.call_hourduration,
+        call_minutesduration : response.customer.call_minutesduration,
+        t_relatedproj_id  : response.customer.t_relatedproj_id,
+        m_userowner_id : response.customer.m_userowner_id,
+        m_userowner_nama : response.customer.m_userowner_nama,
+        m_customerrelated_id : response.customer.m_customerrelated_id,
+        m_customerrelated_nama : response.customer.m_customerrelated_nama
+      }
+    })
   },
 
   methods : {
@@ -431,12 +328,6 @@ export default {
         m_customerrelated_id : null,
         m_customerrelated_nama : 0
       }
-    },
-
-    handleCreate(){
-      this.dialogType = 'New'
-      this.customerDrawer = true
-      this.reset();
     },
 
     getErrorForField(field, error) {
@@ -513,90 +404,33 @@ export default {
       this.form.m_userowner_id = value
     },
 
-    getCalls(){
-      let me = this
-      me.loadingUser = true
-      getCalls({ filter : '' }).then(response => {
-        me.dataList = response.data
-        me.dataListTotal = response.total
-      })
-    },
-
-    handleEdit(scope){
-      this.$router.push({ path: '/activity/call/edit/' + scope.row.call_key });
-    },
-
-    handleDelete(scope){
-      const { $index, row } = scope
-      this.$confirm('Confirm to remove this call?', 'Warning', {
-        confirmButtonText: 'Confirm',
-        cancelButtonText: 'Cancel',
-        type: 'warning'
-      })
-      .then(async() => {
-        deleteCall(row.call_id).then(response => {
-          if(response.status == 'success') {
-            this.$message({
-              type: 'success',
-              message: 'Deleted!'
-            })
-            this.getCalls()
-          }
-        })
-      })
-      .catch(err => { console.error(err) })
-    },
-
     successResponse() {
-      const { customer_subject, m_userowner_nama } = this.form
+      const { call_subject, m_userowner_nama } = this.form
       this.dialogVisible = false
       this.$notify({
         title: 'Success',
         dangerouslyUseHTMLString: true,
         message: `
-            <div>Subject: ${customer_subject}</div>
+            <div>Subject: ${call_subject}</div>
             <div>Related: ${m_userowner_nama}</div>
           `,
         type: 'success'
       })
-
-      this.reset()
     },
 
-    confirmCall(){
-      const me = this
-      const isEdit = me.dialogType === 'Edit'
-      if (!me.validateForm()) {
-        return false;
-      }
-      if (isEdit) {
-          updateCalls(me.form.call_id, me.form).then(response => {
-            me.customerDrawer = false
-            if (response.status == 'success') {
-                me.getCalls();
-                me.successResponse()
-            }
-          })
-          .catch(function (error) {
-            var errmsg = Object.entries(error.response.data.message);
-            var datamsg = []
-            errmsg.forEach(function (params) {
-              var msg = Object.values(params[1])
-              if (msg.length > 0) {
-                  datamsg.push({
-                    field : params[0],
-                    message : msg[0]
-                  })
-              }
-            })
+    confirmCalls(){
+      let me = this
+      const loadingscreen = this.$loading({
+          lock: false,
+          text: 'Loading',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        });
 
-            me.errors = datamsg
-          })
-      } else {
-        createCalls(me.form).then(response => {
-          me.customerDrawer = false
-          me.getCalls();
-          me.successResponse()
+        updateCalls(me.form.call_id, me.form).then(response => {
+          if (response.status == 'success') {
+            me.successResponse()
+          }
         })
         .catch(function (error) {
           var errmsg = Object.entries(error.response.data.message);
@@ -610,21 +444,12 @@ export default {
                 })
             }
           })
+
           me.errors = datamsg
         })
-      }
-    },
 
-    validateForm(){
-      var validform = false
-      let el = this.$refs["submitForm"]
-      el.validate(valid => {
-        validform = valid
-      })
-
-      return validform
-    },
-
+      loadingscreen.close()
+    }
   }
 }
 </script>

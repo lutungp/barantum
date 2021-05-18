@@ -92,22 +92,6 @@ export const constantRoutes = [
       }
     ]
   },
-  // {
-  //   path: '/activity',
-  //   name: 'Activity',
-  //   component: Layout,
-  //   roles: ['ADMIN'],
-  //   children: [
-  //     {
-  //       path: 'followup',
-  //       name: 'Follow Up',
-  //       roles: ['ADMIN'],
-  //       component: () => import('@/views/activity/followup'),
-  //       meta: { title: 'Activity', icon: 'table' }
-  //     }
-  //   ]
-  // },
-
   {
     path: '/activity',
     name: 'Activity',
@@ -123,6 +107,14 @@ export const constantRoutes = [
         roles: ['ADMIN'],
         component: () => import('@/views/activity/calls/index'),
         meta: { title: 'Call', icon: 'el-icon-phone' }
+      },
+      {
+        path: 'call/edit/:id',
+        name: 'Edit',
+        roles: ['ADMIN'],
+        hidden : true,
+        component: () => import('@/views/activity/calls/edit'),
+        meta: { title: 'Edit Call' },
       }
     ]
   },
