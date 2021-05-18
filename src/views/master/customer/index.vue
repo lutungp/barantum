@@ -70,7 +70,7 @@
         </template>
       </el-table-column>
       <el-table-column
-        align="center"console.log(id)
+        align="center"
         label="Operations"
       >
         <template slot-scope="scope">
