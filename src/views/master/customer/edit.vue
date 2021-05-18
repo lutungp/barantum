@@ -320,7 +320,31 @@
      </el-row>
      <br>
      <el-row class="timeline">
-        <el-card class="box-card" style="margin-bottom: 6px;">
+        <el-card class="box-card" style="margin-bottom: 6px;"
+          v-for="element in customerCalls" v-bind:key="element.index">
+          <div class="timeline-title">
+            <span>[Contacts][Listing Data]{{ element.call_subject }} </span><span class="badge bg-primary">Call</span>
+            <div class="wrapper" style="width:400px;">
+              <div class="one">Status</div>
+              <div class="two">Date Start</div>
+              <div class="three">Owner</div>
+            </div>
+            <div class="wrapper" style="width:400px;">
+              <div class="one"><span class="badge bg-primary">HELD</span></div>
+              <div class="two">18 May 2021, 16:31</div>
+              <div class="three">Joe Wilson</div>
+            </div>
+            <br>
+            <div class="description">
+              <el-input
+                type="textarea"
+                :rows="3"
+                value="Data activity tidak ikut ketika merge data contact" readonly>
+              </el-input>
+            </div>
+          </div>
+        </el-card>
+        <!-- <el-card class="box-card" style="margin-bottom: 6px;">
           <div class="timeline-title">
             <span>[Contacts][Listing Data][Merge] Data activity tidak ikut ketika merge data contact </span><span class="badge bg-primary">Call</span>
             <div class="wrapper" style="width:400px;">
@@ -365,37 +389,14 @@
               </el-input>
             </div>
           </div>
-        </el-card>
-        <el-card class="box-card" style="margin-bottom: 6px;">
-          <div class="timeline-title">
-            <span>[Contacts][Listing Data][Merge] Data activity tidak ikut ketika merge data contact </span><span class="badge bg-primary">Call</span>
-            <div class="wrapper" style="width:400px;">
-              <div class="one">Status</div>
-              <div class="two">Date Start</div>
-              <div class="three">Owner</div>
-            </div>
-            <div class="wrapper" style="width:400px;">
-              <div class="one"><span class="badge bg-primary">HELD</span></div>
-              <div class="two">18 May 2021, 16:31</div>
-              <div class="three">Joe Wilson</div>
-            </div>
-            <br>
-            <div class="description">
-              <el-input
-                type="textarea"
-                :rows="3"
-                value="Data activity tidak ikut ketika merge data contact" readonly>
-              </el-input>
-            </div>
-          </div>
-        </el-card>
+        </el-card> -->
      </el-row>
   </div>
 </template>
 <script>
 import { getCustomerDetail, updateCustomer, confirmCustomerCalls } from '@/api/customer'
 import { getUsers } from '@/api/user'
-
+import { getCustomerCalls } from '@/api/call'
 
 export default {
   data() {
@@ -516,6 +517,7 @@ export default {
       optionsHours : [],
       optionsMinutes : [],
       optionsUsers : [],
+      customerCalls : []
     }
   },
 
@@ -535,6 +537,10 @@ export default {
         customer_phone2 : response.customer_phone2,
         customer_job : response.customer_job
       }
+
+      getCustomerCalls(response.customer_id).then(response => {
+        me.customerCalls = response
+      });
     });
   },
 
@@ -680,6 +686,10 @@ export default {
           message: `<div>Save Successfully</div>`,
           type: 'success'
         })
+
+        getCustomerCalls(me.form.customer_id).then(response => {
+          me.customerCalls = response
+        });
       })
       .catch(function (error) {
         var errmsg = Object.entries(error.response.data.message);

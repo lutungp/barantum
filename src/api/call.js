@@ -36,3 +36,10 @@ export function getCallDetail(id) {
     method: 'get'
   })
 }
+
+export function getCustomerCalls(id) {
+  return request({
+    url: `/calls/customer/${id}`,
+    method: 'get'
+  })
+}
