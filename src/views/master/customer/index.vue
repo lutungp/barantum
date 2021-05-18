@@ -336,13 +336,13 @@ export default {
         })
         .then(async() => {
           deleteCustomer(row.customer_id).then(response => {
-            console.log(response)
+            this.$message({
+              type: 'success',
+              message: 'Deleted!'
+            })
+            this.getCustomers()
           })
-          this.$message({
-            type: 'success',
-            message: 'Deleted!'
-          })
-          this.getCustomers()
+          .catch(err => { console.error(err) })
         })
         .catch(err => { console.error(err) })
       },
