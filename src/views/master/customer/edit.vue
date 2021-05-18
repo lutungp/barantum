@@ -1,3 +1,31 @@
+<style lang="scss">
+  .timeline-title {
+    color: #484848;
+    font-size: 13px;
+  }
+  .wrapper {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    grid-auto-rows: minmax(10px, auto);
+  }
+  .one {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .two {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .three {
+    grid-column: 3;
+    grid-row: 1;
+  }
+
+  .text-center {
+    text-align: center;
+  }
+</style>
 <template>
   <div class="app-container">
      <el-row>
@@ -288,16 +316,87 @@
             </el-form>
           </el-row>
         </el-tab-pane>
-        <el-tab-pane label="Notes">
-
-        </el-tab-pane>
        </el-tabs>
+     </el-row>
+     <br>
+     <el-row class="timeline">
+        <el-card class="box-card" style="margin-bottom: 6px;">
+          <div class="timeline-title">
+            <span>[Contacts][Listing Data][Merge] Data activity tidak ikut ketika merge data contact </span><span class="badge bg-primary">Call</span>
+            <div class="wrapper" style="width:400px;">
+              <div class="one">Status</div>
+              <div class="two">Date Start</div>
+              <div class="three">Owner</div>
+            </div>
+            <div class="wrapper" style="width:400px;">
+              <div class="one"><span class="badge bg-primary">HELD</span></div>
+              <div class="two">18 May 2021, 16:31</div>
+              <div class="three">Joe Wilson</div>
+            </div>
+            <br>
+            <div class="description">
+              <el-input
+                type="textarea"
+                :rows="3"
+                value="Data activity tidak ikut ketika merge data contact" readonly>
+              </el-input>
+            </div>
+          </div>
+        </el-card>
+        <el-card class="box-card" style="margin-bottom: 6px;">
+          <div class="timeline-title">
+            <span>[Contacts][Listing Data][Merge] Data activity tidak ikut ketika merge data contact </span><span class="badge bg-primary">Call</span>
+            <div class="wrapper" style="width:400px;">
+              <div class="one">Status</div>
+              <div class="two">Date Start</div>
+              <div class="three">Owner</div>
+            </div>
+            <div class="wrapper" style="width:400px;">
+              <div class="one"><span class="badge bg-primary">HELD</span></div>
+              <div class="two">18 May 2021, 16:31</div>
+              <div class="three">Joe Wilson</div>
+            </div>
+            <br>
+            <div class="description">
+              <el-input
+                type="textarea"
+                :rows="3"
+                value="Data activity tidak ikut ketika merge data contact" readonly>
+              </el-input>
+            </div>
+          </div>
+        </el-card>
+        <el-card class="box-card" style="margin-bottom: 6px;">
+          <div class="timeline-title">
+            <span>[Contacts][Listing Data][Merge] Data activity tidak ikut ketika merge data contact </span><span class="badge bg-primary">Call</span>
+            <div class="wrapper" style="width:400px;">
+              <div class="one">Status</div>
+              <div class="two">Date Start</div>
+              <div class="three">Owner</div>
+            </div>
+            <div class="wrapper" style="width:400px;">
+              <div class="one"><span class="badge bg-primary">HELD</span></div>
+              <div class="two">18 May 2021, 16:31</div>
+              <div class="three">Joe Wilson</div>
+            </div>
+            <br>
+            <div class="description">
+              <el-input
+                type="textarea"
+                :rows="3"
+                value="Data activity tidak ikut ketika merge data contact" readonly>
+              </el-input>
+            </div>
+          </div>
+        </el-card>
      </el-row>
   </div>
 </template>
 <script>
 import { getCustomerDetail, updateCustomer, confirmCustomerCalls } from '@/api/customer'
 import { getUsers } from '@/api/user'
+
+
 export default {
   data() {
     return {
@@ -416,7 +515,7 @@ export default {
       ],
       optionsHours : [],
       optionsMinutes : [],
-      optionsUsers : []
+      optionsUsers : [],
     }
   },
 
