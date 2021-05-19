@@ -25,6 +25,26 @@
   .text-center {
     text-align: center;
   }
+
+  .timeline {
+    .el-card {
+      width: 600px;
+      margin-left: 50px;
+    }
+  }
+
+  .call-description {
+    background-color: #e1edf347;
+    padding: 10px;
+    border-radius: 5px;
+    min-height: 50px;
+  }
+
+  .call-created {
+    font-size: 12px;
+    color: #868686;
+    margin: 10px 0px;
+  }
 </style>
 <template>
   <div class="app-container">
@@ -320,76 +340,30 @@
      </el-row>
      <br>
      <el-row class="timeline">
-        <el-card class="box-card" style="margin-bottom: 6px;"
-          v-for="element in customerCalls" v-bind:key="element.index">
-          <div class="timeline-title">
-            <span>[Contacts][Listing Data]{{ element.call_subject }} </span><span class="badge bg-primary">Call</span>
-            <div class="wrapper" style="width:400px;">
-              <div class="one">Status</div>
-              <div class="two">Date Start</div>
-              <div class="three">Owner</div>
+        <div v-for="element in customerCalls" v-bind:key="element.index">
+          <div class="call-created">{{ element.created_date }}</div>
+          <el-card class="box-card" style="margin-bottom: 6px;">
+            <div class="timeline-title">
+              <span>[Contacts][Listing Data]{{ element.call_subject }} </span><span class="badge bg-primary">Call</span>
+              <div class="wrapper" style="width:400px;">
+                <div class="one">Status</div>
+                <div class="two">Date Start</div>
+                <div class="three">Owner</div>
+              </div>
+              <div class="wrapper" style="width:400px;">
+                <div class="one"><span class="badge bg-success">HELD</span></div>
+                <div class="two">{{ element.call_start_date2 }}</div>
+                <div class="three">{{ element.m_userowner_nama }}</div>
+              </div>
+              <br>
+              <div class="description">
+                <div class="call-description">
+                  {{ element.call_description }}
+                </div>
+              </div>
             </div>
-            <div class="wrapper" style="width:400px;">
-              <div class="one"><span class="badge bg-primary">HELD</span></div>
-              <div class="two">18 May 2021, 16:31</div>
-              <div class="three">Joe Wilson</div>
-            </div>
-            <br>
-            <div class="description">
-              <el-input
-                type="textarea"
-                :rows="3"
-                value="Data activity tidak ikut ketika merge data contact" readonly>
-              </el-input>
-            </div>
-          </div>
-        </el-card>
-        <!-- <el-card class="box-card" style="margin-bottom: 6px;">
-          <div class="timeline-title">
-            <span>[Contacts][Listing Data][Merge] Data activity tidak ikut ketika merge data contact </span><span class="badge bg-primary">Call</span>
-            <div class="wrapper" style="width:400px;">
-              <div class="one">Status</div>
-              <div class="two">Date Start</div>
-              <div class="three">Owner</div>
-            </div>
-            <div class="wrapper" style="width:400px;">
-              <div class="one"><span class="badge bg-primary">HELD</span></div>
-              <div class="two">18 May 2021, 16:31</div>
-              <div class="three">Joe Wilson</div>
-            </div>
-            <br>
-            <div class="description">
-              <el-input
-                type="textarea"
-                :rows="3"
-                value="Data activity tidak ikut ketika merge data contact" readonly>
-              </el-input>
-            </div>
-          </div>
-        </el-card>
-        <el-card class="box-card" style="margin-bottom: 6px;">
-          <div class="timeline-title">
-            <span>[Contacts][Listing Data][Merge] Data activity tidak ikut ketika merge data contact </span><span class="badge bg-primary">Call</span>
-            <div class="wrapper" style="width:400px;">
-              <div class="one">Status</div>
-              <div class="two">Date Start</div>
-              <div class="three">Owner</div>
-            </div>
-            <div class="wrapper" style="width:400px;">
-              <div class="one"><span class="badge bg-primary">HELD</span></div>
-              <div class="two">18 May 2021, 16:31</div>
-              <div class="three">Joe Wilson</div>
-            </div>
-            <br>
-            <div class="description">
-              <el-input
-                type="textarea"
-                :rows="3"
-                value="Data activity tidak ikut ketika merge data contact" readonly>
-              </el-input>
-            </div>
-          </div>
-        </el-card> -->
+          </el-card>
+        </div>
      </el-row>
   </div>
 </template>
