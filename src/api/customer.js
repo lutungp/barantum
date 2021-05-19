@@ -45,3 +45,19 @@ export function deleteCustomer(id) {
     method: 'delete'
   })
 }
+
+export function importExcel(data) {
+  request.defaults.headers.post['Content-Type'] = 'multipart/form-data';
+  return request({
+    url: `/customer/import`,
+    method: 'post',
+    data
+  })
+}
+
+export function exportExcel() {
+  return request({
+    url: `/customer/export`,
+    method: 'get'
+  })
+}

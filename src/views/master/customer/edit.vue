@@ -45,6 +45,12 @@
     color: #868686;
     margin: 10px 0px;
   }
+
+  .badge-timeline {
+    sup {
+      background-color: #409eff;
+    }
+  }
 </style>
 <template>
   <div class="app-container">
@@ -344,14 +350,15 @@
           <div class="call-created">{{ element.created_date }}</div>
           <el-card class="box-card" style="margin-bottom: 6px;">
             <div class="timeline-title">
-              <span>[Contacts][Listing Data]{{ element.call_subject }} </span><span class="badge bg-primary">Call</span>
+              <span>[Contacts][Listing Data]{{ element.call_subject }} </span>
+              <el-badge value="Call" class="item badge-timeline"></el-badge>
               <div class="wrapper" style="width:400px;">
                 <div class="one">Status</div>
                 <div class="two">Date Start</div>
                 <div class="three">Owner</div>
               </div>
               <div class="wrapper" style="width:400px;">
-                <div class="one"><span class="badge bg-success">HELD</span></div>
+                <div class="one"><el-badge value="HELD" class="item badge-timeline"></el-badge></div>
                 <div class="two">{{ element.call_start_date2 }}</div>
                 <div class="three">{{ element.m_userowner_nama }}</div>
               </div>

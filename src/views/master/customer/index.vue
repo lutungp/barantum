@@ -1,12 +1,45 @@
+<style scoped>
+  #formFile:focus {
+    outline: none;
+  }
+</style>
 <template>
   <div class="app-container">
-    <el-button
-      size="small"
-      type="primary"
-      @click="handleCreate"
-    >
-      New Customer
-    </el-button>
+    <el-row>
+
+    </el-row>
+    <el-row :gutter="20">
+      <el-col :span="6">
+        <el-button
+          size="small"
+          type="primary"
+          @click="handleCreate"
+        >
+          New Customer
+        </el-button>
+      </el-col>
+      <el-col :span="2" :offset="6">
+        <el-button
+          size="small"
+          type="success"
+          @click="exportExcel"
+        >
+          Export Xls&nbsp;<i class="el-icon-download el-icon-right"></i>
+        </el-button>
+      </el-col>
+      <el-col :span="8">
+        <el-upload
+          class="upload-demo"
+          :on-change="importExcel"
+          :auto-upload="false"
+          action=""
+          :file-list="fileImport"
+          :multiple="false">
+          <el-button size="small" type="primary">Import Xls&nbsp;<i class="el-icon-upload2 el-icon-right"></i></el-button>
+        </el-upload>
+      </el-col>
+    </el-row>
+
     <el-table
       v-loading="loading"
       :data="dataList"
@@ -226,8 +259,7 @@
   </div>
 </template>
 <script>
-import { getCustomers, updateCustomer, createCustomer, deleteCustomer } from '@/api/customer'
-import { getRoles } from '@/api/roles'
+import { getCustomers, updateCustomer, createCustomer, deleteCustomer, importExcel, exportExcel } from '@/api/customer'
 export default {
     data() {
       return {
@@ -273,7 +305,13 @@ export default {
             value: 'Prof.',
             label: 'Prof.'
           }
-        ]
+        ],
+        importProgress : false,
+        formInline: {
+          method: '',
+          flag: ''
+        },
+        fileImport : []
       }
     },
 
@@ -345,6 +383,38 @@ export default {
           .catch(err => { console.error(err) })
         })
         .catch(err => { console.error(err) })
+      },
+
+      handleExceed(files, fileList) {
+        this.$message.warning(`The limit is 3, you selected ${files.length} files this time, add up to ${files.length + fileList.length} totally`);
+      },
+
+      async importExcel(params){
+        console.log(params)
+        let formData = new FormData()
+
+        formData.append('file', params.raw)
+        importExcel(formData).then(response => {
+
+        });
+
+        // axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
+        // axios({
+        //     method:'post',
+        //     url : getMLIP()+"/malware/filedetect",
+        //     data:formData,
+        // }).then((response)=>{
+        //     console.log(response)
+        // }).catch((error)=>{
+        //     console.log(error)
+        // })
+        // this.importProgress = true
+      },
+
+      async exportExcel(){
+        exportExcel().then(response => {
+          window.open(response.url)
+        });
       },
 
       confirmCustomer(){
