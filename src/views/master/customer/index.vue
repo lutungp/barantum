@@ -390,12 +390,25 @@ export default {
       },
 
       async importExcel(params){
-        console.log(params)
+        let me = this
         let formData = new FormData()
 
         formData.append('file', params.raw)
         importExcel(formData).then(response => {
+          if (response.status == 'success') {
+            me.fileImport = []
 
+            this.$message({
+              type: 'success',
+              message: 'Imported success!'
+            })
+            this.getCustomers()
+          } else {
+            this.$message({
+              type: 'errpr',
+              message: 'Imported failed!'
+            })
+          }
         });
 
         // axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
