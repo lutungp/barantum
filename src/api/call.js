@@ -43,3 +43,19 @@ export function getCustomerCalls(id) {
     method: 'get'
   })
 }
+
+export function importExcel(data) {
+  request.defaults.headers.post['Content-Type'] = 'multipart/form-data';
+  return request({
+    url: `/calls/import`,
+    method: 'post',
+    data
+  })
+}
+
+export function exportExcel() {
+  return request({
+    url: `/calls/export`,
+    method: 'get'
+  })
+}

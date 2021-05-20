@@ -5,9 +5,6 @@
 </style>
 <template>
   <div class="app-container">
-    <el-row>
-
-    </el-row>
     <el-row :gutter="20">
       <el-col :span="6">
         <el-button
@@ -410,18 +407,6 @@ export default {
             })
           }
         });
-
-        // axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
-        // axios({
-        //     method:'post',
-        //     url : getMLIP()+"/malware/filedetect",
-        //     data:formData,
-        // }).then((response)=>{
-        //     console.log(response)
-        // }).catch((error)=>{
-        //     console.log(error)
-        // })
-        // this.importProgress = true
       },
 
       async exportExcel(){

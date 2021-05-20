@@ -1,12 +1,36 @@
 <template>
   <div class="app-container">
-    <el-button
-      size="small"
-      type="primary"
-      @click="handleCreate"
-    >
-      New Call
-    </el-button>
+    <el-row :gutter="20">
+      <el-col :span="6">
+        <el-button
+          size="small"
+          type="primary"
+          @click="handleCreate"
+        >
+          New Call
+        </el-button>
+      </el-col>
+      <el-col :span="2" :offset="6">
+        <el-button
+          size="small"
+          type="success"
+          @click="exportExcel"
+        >
+          Export Xls&nbsp;<i class="el-icon-download el-icon-right"></i>
+        </el-button>
+      </el-col>
+      <el-col :span="8">
+        <el-upload
+          class="upload-demo"
+          :on-change="importExcel"
+          :auto-upload="false"
+          action=""
+          :file-list="fileImport"
+          :multiple="false">
+          <el-button size="small" type="primary">Import Xls&nbsp;<i class="el-icon-upload2 el-icon-right"></i></el-button>
+        </el-upload>
+      </el-col>
+    </el-row>
     <el-table
       v-loading="loading"
       :data="dataList"
@@ -268,7 +292,7 @@
 <script>
 import { getCustomers } from '@/api/customer'
 import { getUsers } from '@/api/user'
-import { getCalls, updateCalls, createCalls, deleteCall } from '@/api/call'
+import { getCalls, updateCalls, createCalls, deleteCall, exportExcel, importExcel } from '@/api/call'
 export default {
   data() {
     return {
@@ -380,7 +404,12 @@ export default {
       optionsUsers : [],
       loadingUser : false,
       loadingCustomer : false,
-      optionsCustomers : []
+      optionsCustomers : [],
+      formInline: {
+        method: '',
+        flag: ''
+      },
+      fileImport : []
     }
   },
 
@@ -520,6 +549,35 @@ export default {
         me.dataList = response.data
         me.dataListTotal = response.total
       })
+    },
+
+    async exportExcel(){
+      exportExcel().then(response => {
+        window.open(response.url)
+      });
+    },
+
+    async importExcel(params){
+      let me = this
+      let formData = new FormData()
+
+      formData.append('file', params.raw)
+      importExcel(formData).then(response => {
+        if (response.status == 'success') {
+          me.fileImport = []
+
+          this.$message({
+            type: 'success',
+            message: 'Imported success!'
+          })
+          this.getCustomers()
+        } else {
+          this.$message({
+            type: 'errpr',
+            message: 'Imported failed!'
+          })
+        }
+      });
     },
 
     handleEdit(scope){

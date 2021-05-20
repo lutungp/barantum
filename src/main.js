@@ -16,11 +16,9 @@ import router from './router'
 import '@/icons' // icon
 import '@/permission' // permission control
 import 'bootstrap'
+import io from 'socket.io-client';
 
-// set ElementUI lang to EN
 Vue.use(ElementUI, { locale })
-// 如果想要中文版 element-ui，按如下方式声明
-// Vue.use(ElementUI)
 
 Vue.config.productionTip = false
 
@@ -28,5 +26,18 @@ new Vue({
   el: '#app',
   router,
   store,
-  render: h => h(App)
+  data: {
+    message: '',
+    socket : process.env.VUE_APP_SOCKET_LINK
+  },
+  io : false,
+  render: h => h(App),
+
+  created ()  {
+      var me = this;
+      if (me.socket != 'false') {
+          me.io= io(me.socket);
+      }
+  }
+
 })
