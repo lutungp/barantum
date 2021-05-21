@@ -1,10 +1,11 @@
 import { login, logout, getInfo, getActivity } from '@/api/user'
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import { getToken, setToken, getSockToken, setSockToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
 
 const getDefaultState = () => {
   return {
     token: getToken(),
+    socktoken : getSockToken(),
     name: '',
     avatar: '',
     role : '',
@@ -21,6 +22,9 @@ const mutations = {
   SET_TOKEN: (state, token) => {
     state.token = token
   },
+  SET_SOCKTOKEN: (state, token) => {
+    state.socktoken = token
+  },
   SET_NAME: (state, name) => {
     state.name = name
   },
@@ -35,6 +39,12 @@ const mutations = {
   }
 }
 
+const getters = {
+  getSockToken: (state) => {
+    return state.socktoken
+  },
+}
+
 const actions = {
   // user login
   login({ commit }, userInfo) {
@@ -42,7 +52,10 @@ const actions = {
     return new Promise((resolve, reject) => {
       login({ name: name.trim(), password: password }).then(response => {
         commit('SET_TOKEN', response.token)
+        commit('SET_SOCKTOKEN', response.socktoken)
         setToken(response.token)
+        setSockToken(response.socktoken)
+
         resolve()
       }).catch(error => {
         reject(error)
@@ -110,6 +123,7 @@ const actions = {
 export default {
   namespaced: true,
   state,
+  getters,
   mutations,
   actions
 }

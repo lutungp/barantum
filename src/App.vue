@@ -5,7 +5,22 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
-  name: 'App'
+  name: 'App',
+
+  data(){
+    return {
+      socktoken : this.getSockToken()
+    }
+  },
+
+  created(){
+
+  },
+
+  methods : {
+    ...mapGetters('user', ['getSockToken']),
+  }
 }
 </script>
