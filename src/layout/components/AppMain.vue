@@ -36,9 +36,11 @@ export default {
       socket.userID = userID;
     });
 
-    socket.on("users", (users) =>{
-      console.log(users)
-
+    socket.on("pingUser1", ({ content, from, to }) => {
+      this.$message({
+        type: 'info',
+        message: `Hello ${to}`
+      });
     })
   },
 

@@ -56,6 +56,20 @@
           >
             Delete
           </el-button>
+          <el-button
+            type="success"
+            size="small"
+            @click="pingUser1(scope)"
+            icon="el-icon-bell" circle
+          >
+          </el-button>
+          <el-button
+            type="warning"
+            size="small"
+            @click="pingUser2(scope)"
+            icon="el-icon-bell" circle
+          >
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -143,6 +157,7 @@
 <script>
 import { getUsers, updateUser, createUser, deleteUser } from '@/api/user'
 import { getRoles } from '@/api/roles'
+import socket from "./../../socket";
 export default {
     data() {
       return {
@@ -259,6 +274,10 @@ export default {
         .catch(err => { console.error(err) })
       },
 
+      pingUser(scope){
+
+      },
+
       confirmUser(){
         let me = this
         const isEdit = me.dialogType === 'Edit'
@@ -338,7 +357,16 @@ export default {
         if (selectRole.length > 0) {
           this.form.role_nama = selectRole[0].role_nama
         }
+      },
+
+      pingUser1(scope){
+        socket.emit("pingUser1", { "to": scope.row.socktoken })
+      },
+
+      pingUser2(){
+
       }
+
     }
 }
 </script>
