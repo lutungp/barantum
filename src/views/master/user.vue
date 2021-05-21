@@ -63,13 +63,13 @@
             icon="el-icon-bell" circle
           >
           </el-button>
-          <el-button
+          <!-- <el-button
             type="warning"
             size="small"
             @click="pingUser2(scope)"
             icon="el-icon-bell" circle
           >
-          </el-button>
+          </el-button> -->
         </template>
       </el-table-column>
     </el-table>

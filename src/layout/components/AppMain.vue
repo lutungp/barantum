@@ -38,7 +38,7 @@ export default {
 
     socket.on("pingUser1", ({ content, from, to }) => {
       this.$message({
-        type: 'info',
+        type: 'error',
         message: `Hello ${to}`
       });
     })
